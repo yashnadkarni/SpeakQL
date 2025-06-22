@@ -8,3 +8,8 @@ langchainhub
 langchain-groq
 sqlalchemy
 aiosqlite 
+eralchemy
+graphviz
+speech_recognition
+pyttsx3
+pyperclip
