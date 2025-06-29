@@ -2,7 +2,7 @@ import streamlit as st
 # from dotenv import load_dotenv
 import os
 import time
-from eralchemy import render_er
+#from eralchemy import render_er
 
 import speech_recognition as sr
 import wave
@@ -133,7 +133,7 @@ def main():
     
     img_name = 'chinhook_arch.png'
     output_path = os.path.join(os.getcwd(), 'data', img_name)
-    render_er(db_url, output_path)
+    # render_er(db_url, output_path)
     if st.sidebar.button("ER Diagram", use_container_width=True, type='primary'):
         generate_er(output_path, db_url)
 

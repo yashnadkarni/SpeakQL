@@ -8,7 +8,6 @@ langchainhub
 langchain-groq
 sqlalchemy
 aiosqlite 
-eralchemy
 graphviz
 SpeechRecognition
 pyttsx3
