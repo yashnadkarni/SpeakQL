@@ -13,3 +13,4 @@ graphviz
 SpeechRecognition
 pyttsx3
 pyperclip
+dotenv
