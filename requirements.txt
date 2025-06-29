@@ -10,6 +10,6 @@ sqlalchemy
 aiosqlite 
 eralchemy
 graphviz
-speech_recognition
+SpeechRecognition
 pyttsx3
 pyperclip

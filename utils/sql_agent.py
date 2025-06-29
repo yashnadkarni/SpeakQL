@@ -47,7 +47,7 @@ if not os.environ.get("LANGSMITH_API_KEY"):
     os.environ["LANGSMITH_TRACING"] = "true"
 
 
-db = SQLDatabase.from_uri("sqlite:///Chinook.db")
+db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
 
 class State(TypedDict):
     question: str
@@ -61,36 +61,6 @@ if not os.environ.get("GROQ_API_KEY"):
 
 llm = init_chat_model("llama3-8b-8192", model_provider="groq")
 
-
-
-
-# Adding a checkpoint( MemorySaver) ******************************************************
-# memory = MemorySaver()
-# graph = graph_builder.compile(checkpointer=memory, interrupt_before=["execute_query"])
-
-# # Now that we're using persistence, we need to specify a thread ID
-# # so that we can continue the run after review.
-# config = {"configurable": {"thread_id": "1"}}
-
-# for step in graph.stream(
-#     {"question": "How many employees are there?"},
-#     config,
-#     stream_mode="updates",
-# ):
-#     print(step)
-
-# try:
-#     user_approval = input("Do you want to go to execute query? (yes/no): ")
-# except Exception:
-#     user_approval = "no"
-
-# if user_approval.lower() == "yes":
-#     # If approved, continue the graph execution
-#     for step in graph.stream(None, config, stream_mode="updates"):
-#         print(step)
-# else:
-#     print("Operation cancelled by user.")
-# Checkpoint end ******************************************************
 
 # Function to capture printed output
 def capture_pretty_print(obj):
@@ -113,8 +83,7 @@ agent_executor = create_react_agent(llm, tools, prompt=system_message)
 
 
 
-# st.title("SpeakQL Pro")
-# st.write("For complex queries. Uses a SQL Agent.")
+
 # ---------- HEADER ----------
 st.markdown("<h1 style='text-align: center;'>SpeakQL Pro</h1>", unsafe_allow_html=True)
 st.markdown("<h5 style='text-align: center;'>For complex queries. Uses a SQL Agent.</h5>", unsafe_allow_html=True)
@@ -131,13 +100,6 @@ prompt = st.chat_input("Enter your question")
 if prompt:
     st.write(f"{prompt}")
     output_accum = ""
-    # placeholder = st.empty()
-
-    # for step in agent_executor.stream(
-    #     {"messages": [{"role": "user", "content": prompt}]},
-    #     stream_mode="values",):
-    #     output_accum += capture_pretty_print(step["messages"][-1]) + "\n"
-    #     placeholder.code(output_accum, language='text')
 
     with st.status("Running SQL Agent...", expanded=True) as status:
         placeholder = st.empty()

@@ -1,13 +1,21 @@
 
 import streamlit as st
 import streamlit.components.v1 as components
+import time
 
-st.set_page_config(page_title="SpeakQL for Enterprise", layout="wide", page_icon="🗣️")
+
+# if 'enterprise_title' not in st.session_state:
+#     st.session_state.enterprise_title=''
+
+#st.set_page_config(page_title="SpeakQL for Enterprise", layout="wide", page_icon="🗣️")
 
 # ---------- HEADER ----------
-st.markdown("<h1 style='text-align: center;'>🗣️ SpeakQL for Enterprise</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center;'>🗣️ SpeakQL for Enterprise</h1>", unsafe_allow_html=True)
 st.markdown("<h4 style='text-align: center;'>Conversational SQL Interface for Enterprise Data Teams</h4>", unsafe_allow_html=True)
 st.markdown("---")
+
+
+#title_changes=['Teams', 'Organizations', 'Enterprise', 'You']
 
 
 # ---------- VALUE PROP ----------
@@ -99,17 +107,31 @@ I am a software engineer in Dallas and this is my first project using AI agents.
 Would love to get your opinion and feedback!
 """)
 
-st.markdown("""
-<div style='text-align: left;'>
-    <a href="mailto:developwithyash@gmail.com">
-        <button style='font-size:20px;padding:10px 30px;background-color:#2980B9;color:white;border:none;border-radius:8px;'>
-            📬 Contact Me
-        </button>
-    </a>
-</div>
-""", unsafe_allow_html=True)
+email, linkedin, other = st.columns([0.15, 0.15, 0.7])
+with email:
+    st.markdown("""
+    <div style='text-align: left;'>
+        <a href="mailto:developwithyash@gmail.com">
+            <button style='font-size:20px;padding:10px 30px;background-color:#eb8a0c;color:white;border:none;border-radius:8px;'>
+                Email
+            </button>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+with linkedin:
+    st.markdown("""
+    <div style='text-align: left;'>
+        <a href="https://www.linkedin.com/in/yashnadkarni/">
+            <button style='font-size:20px;padding:10px 30px;background-color:#0077B5;color:white;border:none;border-radius:8px;'>
+                LinkedIn
+            </button>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ---------- FOOTER ----------
 st.markdown("<hr>", unsafe_allow_html=True)
 st.markdown("<center><small>&copy; 2025 SpeakQL</small></center>", unsafe_allow_html=True)
+
