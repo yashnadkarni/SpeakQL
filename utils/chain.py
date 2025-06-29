@@ -1,6 +1,6 @@
 import os
 import getpass
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from langchain_community.utilities import SQLDatabase
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
@@ -27,7 +27,7 @@ import streamlit as st
 import time
 
 # Load environment variables from .env file
-load_dotenv()
+#load_dotenv()
 class State(TypedDict):
     question: str
     query: str
@@ -41,8 +41,8 @@ class QueryOutput(TypedDict):
 def get_api_keys():
     """Retrieve API keys from environment variables."""
     api_keys = {
-        "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
-        "LANGSMITH_API_KEY": os.getenv("LANGSMITH_API_KEY")
+        "GROQ_API_KEY": st.secrets["GROQ_API_KEY"],
+        "LANGSMITH_API_KEY": st.secrets["LANGSMITH_API_KEY"]
     }
     return api_keys
 
@@ -68,12 +68,12 @@ def human_in_loop(query):
             st.rerun()
 
 api_keys = get_api_keys()
-if not os.environ.get("LANGSMITH_API_KEY"):
-    os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
-    os.environ["LANGSMITH_TRACING"] = "true"
+# if not os.environ.get("LANGSMITH_API_KEY"):
+#     os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
+#     os.environ["LANGSMITH_TRACING"] = "true"
 
-if not os.environ.get("GROQ_API_KEY"):
-    os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
+# if not os.environ.get("GROQ_API_KEY"):
+#     os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
 db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
 llm = init_chat_model("llama3-8b-8192", model_provider="groq")

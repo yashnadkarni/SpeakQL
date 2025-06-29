@@ -32,8 +32,8 @@ load_dotenv()
 def get_api_keys():
     """Retrieve API keys from environment variables."""
     api_keys = {
-        "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
-        "LANGSMITH_API_KEY": os.getenv("LANGSMITH_API_KEY")
+        "GROQ_API_KEY": st.secrets["GROQ_API_KEY"],
+        "LANGSMITH_API_KEY": st.secrets["LANGSMITH_API_KEY"]
     }
     return api_keys
 
@@ -42,9 +42,9 @@ def get_api_keys():
 api_keys = get_api_keys()
 
 
-if not os.environ.get("LANGSMITH_API_KEY"):
-    os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
-    os.environ["LANGSMITH_TRACING"] = "true"
+# if not os.environ.get("LANGSMITH_API_KEY"):
+#     os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
+#     os.environ["LANGSMITH_TRACING"] = "true"
 
 
 db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
@@ -55,8 +55,8 @@ class State(TypedDict):
     result: str
     answer: str
 
-if not os.environ.get("GROQ_API_KEY"):
-  os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
+# if not os.environ.get("GROQ_API_KEY"):
+#   os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
 
 llm = init_chat_model("llama3-8b-8192", model_provider="groq")

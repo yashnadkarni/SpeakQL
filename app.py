@@ -1,5 +1,5 @@
 import streamlit as st
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 import time
 from eralchemy import render_er
@@ -9,26 +9,26 @@ import wave
 import io
 import pyperclip
 # Load environment variables
-load_dotenv()
+# load_dotenv()
 
 
 
-def save_api_keys(langchain_key, model_key, selected_model):
-    """Save API keys to environment variables."""
-    if langchain_key:
-        os.environ["LANGSMITH_API_KEY"] = langchain_key
-        st.session_state["langsmith_key_set"] = True
+# def save_api_keys(langchain_key, model_key, selected_model):
+#     """Save API keys to environment variables."""
+#     if langchain_key:
+#         os.environ["LANGSMITH_API_KEY"] = langchain_key
+#         st.session_state["langsmith_key_set"] = True
     
-    if model_key:
-        if selected_model == "Groq":
-            os.environ["GROQ_API_KEY"] = model_key
-            st.session_state["model_key_set"] = True
-        elif selected_model == "OpenAI":
-            os.environ["OPENAI_API_KEY"] = model_key
-            st.session_state["model_key_set"] = True
-        elif selected_model == "Anthropic":
-            os.environ["ANTHROPIC_API_KEY"] = model_key
-            st.session_state["model_key_set"] = True
+#     if model_key:
+#         if selected_model == "Groq":
+#             os.environ["GROQ_API_KEY"] = model_key
+#             st.session_state["model_key_set"] = True
+#         elif selected_model == "OpenAI":
+#             os.environ["OPENAI_API_KEY"] = model_key
+#             st.session_state["model_key_set"] = True
+#         elif selected_model == "Anthropic":
+#             os.environ["ANTHROPIC_API_KEY"] = model_key
+#             st.session_state["model_key_set"] = True
 
 
 @st.dialog("ER Diagram", width="large")
@@ -40,8 +40,11 @@ def generate_er(img_path, db_url):
 
 @st.dialog("API Keys")
 def api_keys_box(curr_model):
-    os.environ["LANGSMITH_API_KEY"] = st.text_input("Enter LangSmith API Key", type="password", key='langsmith')
-    os.environ[f"{curr_model.upper()}_API_KEY"] = st.text_input(f"Enter {curr_model} API Key", type="password", key='model_api_key')
+    # os.environ["LANGSMITH_API_KEY"] = st.text_input("Enter LangSmith API Key", type="password", key='langsmith')
+    # os.environ[f"{curr_model.upper()}_API_KEY"] = st.text_input(f"Enter {curr_model} API Key", type="password", key='model_api_key')
+    l_api_key = st.text_input("Enter LangSmith API Key", type="password", key='langsmith')
+    m_api_key = st.text_input(f"Enter {curr_model} API Key", type="password", key='model_api_key')
+    
     if st.button("Submit"):
         st.toast("API Keys saved successfully!")
         st.rerun()
