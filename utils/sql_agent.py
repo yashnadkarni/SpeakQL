@@ -4,7 +4,7 @@ import streamlit as st
 import io
 import sys
 import time
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from langchain_community.utilities import SQLDatabase
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
@@ -27,7 +27,7 @@ from typing_extensions import TypedDict
 from typing_extensions import Annotated
 
 # Load environment variables from .env file
-load_dotenv()
+# load_dotenv()
 
 def get_api_keys():
     """Retrieve API keys from environment variables."""

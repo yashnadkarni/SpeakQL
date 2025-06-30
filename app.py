@@ -4,13 +4,19 @@ import os
 import time
 #from eralchemy import render_er
 
-import speech_recognition as sr
-import wave
+# import speech_recognition as sr
+# import wave
 import io
-import pyperclip
+# import pyperclip
 # Load environment variables
 # load_dotenv()
 
+# Add to requirements
+# graphviz
+# SpeechRecognition
+# pyttsx3
+# pyperclip
+# dotenv
 
 
 # def save_api_keys(langchain_key, model_key, selected_model):
@@ -148,25 +154,26 @@ def main():
     # ----------------------- Trying voice  -----------------------------------
     audio = st.sidebar.audio_input("Try Voice Input")
     if audio:
-        r = sr.Recognizer()
-        audio_bytes = audio.getvalue()
-        with wave.open(io.BytesIO(audio_bytes), 'rb') as wf:
-            sample_rate = wf.getframerate()
-            sample_width = wf.getsampwidth()
-            raw_data = wf.readframes(wf.getnframes())
-        audio_data = sr.AudioData(raw_data, sample_rate, sample_width)
-        with st.sidebar.empty():
-            try:
-                with st.spinner("Please wait...", show_time=True):
-                    text = r.recognize_google(audio_data)
-                    text = text.lower()
-                st.info(f"{text}  (Text Copied! Paste in Chat)")
-                pyperclip.copy(text)
-                #st.toast("Text Copied. Paste in Chat")
-            except sr.UnknownValueError:
-                st.warning("Could not understand audio.")
-            except sr.RequestError as e:
-                st.error(f"Speech recognition failed: {e}")
+        st.warning("Unfortunately, audio translation is not working.")
+        # r = sr.Recognizer()
+        # audio_bytes = audio.getvalue()
+        # with wave.open(io.BytesIO(audio_bytes), 'rb') as wf:
+        #     sample_rate = wf.getframerate()
+        #     sample_width = wf.getsampwidth()
+        #     raw_data = wf.readframes(wf.getnframes())
+        # audio_data = sr.AudioData(raw_data, sample_rate, sample_width)
+        # with st.sidebar.empty():
+        #     try:
+        #         with st.spinner("Please wait...", show_time=True):
+        #             text = r.recognize_google(audio_data)
+        #             text = text.lower()
+        #         st.info(f"{text}  (Text Copied! Paste in Chat)")
+        #         pyperclip.copy(text)
+        #         #st.toast("Text Copied. Paste in Chat")
+        #     except sr.UnknownValueError:
+        #         st.warning("Could not understand audio.")
+        #     except sr.RequestError as e:
+        #         st.error(f"Speech recognition failed: {e}")
     # if st.sidebar.button("Try Voice", icon=':material/mic:', type="secondary", use_container_width=True):
     #     voice.speech_to_text()
 

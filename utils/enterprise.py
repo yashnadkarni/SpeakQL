@@ -35,15 +35,15 @@ col1, col2 = st.columns(2)
 with col1:
     st.markdown("#### ✅ Natural Language to SQL")
     st.markdown("Just ask questions — get precise SQL-powered answers.")
-
-    st.markdown("#### 🎤 Voice-to-Text Input")
-    st.markdown("Users can speak directly into the interface — SpeakQL automatically transcribes voice into actionable queries.")
     
     st.markdown("#### 🧱 ER Diagram Generation")
     st.markdown("Dynamically generate Entity-Relationship diagrams from your database schema, offering clear insights for analysts and engineers.")
 
     st.markdown("#### 🤖 SQL Agent Integration")
     st.markdown("SpeakQL leverages powerful SQL agents to manage multi-step reasoning, subqueries, and joins — making complex questions easy to answer.")
+
+    st.markdown("#### 🎤 Voice-to-Text Input")
+    st.markdown("Users can speak directly into the interface — SpeakQL automatically transcribes voice into actionable queries.")
 
 with col2:
 
