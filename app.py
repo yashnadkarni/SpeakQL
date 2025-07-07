@@ -168,8 +168,7 @@ def main():
                     text = r.recognize_google(audio_data)
                     text = text.lower()
                 st.info(f"{text}  (Text Copied! Paste in Chat)")
-                pyperclip.copy(text)
-                #st.toast("Text Copied. Paste in Chat")
+                #pyperclip.copy(text) - copy issue in prod
             except sr.UnknownValueError:
                 st.warning("Could not understand audio.")
             except sr.RequestError as e:
