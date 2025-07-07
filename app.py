@@ -167,7 +167,7 @@ def main():
                 with st.spinner("Please wait...", show_time=True):
                     text = r.recognize_google(audio_data)
                     text = text.lower()
-                st.info(f"{text}  (Text Copied! Paste in Chat)")
+                st.info(f"{text}  (Please paste in Chat)")
                 #pyperclip.copy(text) - copy issue in prod
             except sr.UnknownValueError:
                 st.warning("Could not understand audio.")
