@@ -76,7 +76,7 @@ api_keys = get_api_keys()
 #     os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
 db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
-llm = init_chat_model("llama3-8b-8192", model_provider="groq")
+llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
 
 def write_query(state: State):
     """Generate SQL query to fetch information."""

@@ -59,7 +59,7 @@ class State(TypedDict):
 #   os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
 
-llm = init_chat_model("llama3-8b-8192", model_provider="groq")
+llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
 
 
 # Function to capture printed output
