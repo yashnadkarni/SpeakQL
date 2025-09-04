@@ -1,10 +1,16 @@
-import os
-import getpass
+# --------------------------------------------------------------------------
+# SpeakQL Pro file
+# Workflow: User Input -> SQL Query -> Database Output -> Answer
+#                        ^-------- SQL Agent --------^
+# Agent will generate SQL query, execute it, analyze result and continue the loop if an error occurs.
+# --------------------------------------------------------------------------
+
+# Main imports
 import streamlit as st
 import io
 import sys
 import time
-# from dotenv import load_dotenv
+
 from langchain_community.utilities import SQLDatabase
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
@@ -26,9 +32,8 @@ from langchain_core.runnables import RunnablePassthrough
 from typing_extensions import TypedDict
 from typing_extensions import Annotated
 
-# Load environment variables from .env file
-# load_dotenv()
 
+# Function to get the API keys
 def get_api_keys():
     """Retrieve API keys from environment variables."""
     api_keys = {
@@ -38,34 +43,23 @@ def get_api_keys():
     }
     return api_keys
 
-
-
-api_keys = get_api_keys()
-
-
-# if not os.environ.get("LANGSMITH_API_KEY"):
-#     os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
-#     os.environ["LANGSMITH_TRACING"] = "true"
-
-
-db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
-
+# State class --> All the variables used in the agent
 class State(TypedDict):
     question: str
     query: str
     result: str
     answer: str
 
-# if not os.environ.get("GROQ_API_KEY"):
-#   os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
-
+# Initialize API keys, database and LLM
+api_keys = get_api_keys()
+db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
 #llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
 llm = init_chat_model("gpt-4o-mini", model_provider="openai")
 
 
 
-# Function to capture printed output
+# Function to capture printed output in console
 def capture_pretty_print(obj):
     buffer = io.StringIO()
     sys.stdout = buffer
@@ -73,32 +67,37 @@ def capture_pretty_print(obj):
     sys.stdout = sys.__stdout__
     return buffer.getvalue()
 
-# Building agent ******************************************************
+
+# Building agent ------------------------------------------------------------
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 tools = toolkit.get_tools()
-# print(tools)
+# print(tools) ---> for debugging
 
+# Using predefined prompts --> langchain-ai/sql-agent-system-prompt
 prompt_template = hub.pull("langchain-ai/sql-agent-system-prompt")
 assert len(prompt_template.messages) == 1
-
 system_message = prompt_template.format(dialect="SQLite", top_k=5)
+
+# Creating the agent
 agent_executor = create_react_agent(llm, tools, prompt=system_message)
 
 
 
 
-# ---------- HEADER ----------
+# ---------- Page header ----------
 st.markdown("<h1 style='text-align: center;'>SpeakQL Pro</h1>", unsafe_allow_html=True)
 st.markdown("<h5 style='text-align: center;'>For complex queries. Uses a SQL Agent.</h5>", unsafe_allow_html=True)
 
 
-
 data = ""
+
+# Generator function to stream data
 def stream_data(data):
     for word in data.split(" "):
         yield word + " "
         time.sleep(0.02)
 
+# Streamlit chat interface
 prompt = st.chat_input("Enter your question")
 if prompt:
     st.write(f"{prompt}")
@@ -106,6 +105,7 @@ if prompt:
 
     with st.status("Running SQL Agent...", expanded=True) as status:
         placeholder = st.empty()
+        # Displaying steps to user while agent runs
         for step in agent_executor.stream(
             {"messages": [{"role": "user", "content": prompt}]},
             stream_mode="values",):
@@ -119,14 +119,13 @@ if prompt:
         final_answer = step["messages"][-1].content
     
     if final_answer:
+        # Displaying final answer
         st.write_stream(stream_data(final_answer))
     
         
 
-
-
-
-# question = "Which country's customers spent the most?"
-# question = "Describe the playlisttrack table"
+# ( Questions to ask )
+# Which country's customers spent the most?
+# Describe the playlisttrack table
 # How many employees are there?
 # What are the unique last names of all employees?

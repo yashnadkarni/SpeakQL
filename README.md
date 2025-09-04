@@ -65,7 +65,7 @@ The `SpeakQL for Enterprise` page includes powerful capabilities tailored for or
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/speakql.git
+git clone https://github.com/yashnadkarni/SpeakQL.git
 cd speakql
 
 # Create a virtual environment
@@ -75,4 +75,5 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Add your API keys to .streamlit/secrets.toml
+# Run the app
+streamlit run app.py

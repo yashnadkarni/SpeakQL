@@ -8,7 +8,6 @@ langchainhub==0.1.21
 langchain-groq==0.3.4
 sqlalchemy==1.4.26
 aiosqlite==0.21.0
-
 langchain-openai==0.3.26
 
 SpeechRecognition

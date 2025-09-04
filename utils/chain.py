@@ -1,6 +1,9 @@
-import os
-import getpass
-#from dotenv import load_dotenv
+# --------------------------------------------------------------------------
+# SpeakQL Basic workflow file -> Single chain
+# Workflow: User Input -> SQL Query -> Database Output -> Answer
+# --------------------------------------------------------------------------
+
+# Main imports
 from langchain_community.utilities import SQLDatabase
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
@@ -24,20 +27,23 @@ from typing_extensions import TypedDict
 from typing_extensions import Annotated
 
 import streamlit as st
-import time
 
-# Load environment variables from .env file
-#load_dotenv()
+
+
+
+# State class --> All the variables used in the chain
 class State(TypedDict):
     question: str
     query: str
     result: str
     answer: str
 
+# Output parser for the query
 class QueryOutput(TypedDict):
     """Generated SQL query."""
     query: Annotated[str, ..., "Syntactically valid SQL query."]
 
+# Function to get the API keys
 def get_api_keys():
     """Retrieve API keys from environment variables."""
     api_keys = {
@@ -47,40 +53,21 @@ def get_api_keys():
     }
     return api_keys
 
+# Initialize session states
 if "steps" not in st.session_state:
     st.session_state.steps = []
-
 if "validate_query" not in st.session_state:
     st.session_state.validate_query = 0
 
 
-# @st.dialog("! User Validation")
-# def human_in_loop(query):
-#     st.write(f"Procced with query?")
-#     st.write(query)
-#     col1, col2 = st.columns([1,1])
-#     with col1:
-#         if st.button("Approve", type='primary'):
-#             st.session_state.validate_query = True
-#             st.rerun()
-#     with col2:
-#         if st.button("Reject"):
-#             st.session_state.validate_query = False
-#             st.rerun()
 
+# Initialize API keys, database and LLM
 api_keys = get_api_keys()
-# if not os.environ.get("LANGSMITH_API_KEY"):
-#     os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
-#     os.environ["LANGSMITH_TRACING"] = "true"
-
-# if not os.environ.get("GROQ_API_KEY"):
-#     os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
-
 db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
 # llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
 llm = init_chat_model("gpt-4o-mini", model_provider="openai")
 
-
+# Writes the query for the database --> returns dict with query
 def write_query(state: State):
     """Generate SQL query to fetch information."""
     query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
@@ -97,11 +84,13 @@ def write_query(state: State):
     result = structured_llm.invoke(prompt)
     return {"query": result["query"]}
 
+# Queries the database --> returns dict with result
 def execute_query(state: State):
     """Execute SQL query."""
     execute_query_tool = QuerySQLDatabaseTool(db=db)
     return {"result": execute_query_tool.invoke(state["query"])}
 
+# Generates the answer based on database output --> returns dict with answer
 def generate_answer(state: State):
     """Answer question using retrieved information as context."""
     prompt = (
@@ -114,7 +103,7 @@ def generate_answer(state: State):
     response = llm.invoke(prompt)
     return {"answer": response.content}
 
-
+# Builds and executes the chain --> returns iterable with steps
 def execute_chain(prompt):
     graph_builder = StateGraph(State).add_sequence(
         [write_query, execute_query, generate_answer]
@@ -122,6 +111,40 @@ def execute_chain(prompt):
     graph_builder.add_edge(START, "write_query")
     graph = graph_builder.compile()
     return graph.stream({"question": prompt}, stream_mode="updates")
+
+
+
+# For dev env ------------------------------------------------------------
+# import os
+# import getpass
+# from dotenv import load_dotenv
+# import time
+
+# Load environment variables from .env file
+#load_dotenv()
+# if not os.environ.get("LANGSMITH_API_KEY"):
+#     os.environ["LANGSMITH_API_KEY"] = api_keys["LANGSMITH_API_KEY"]
+#     os.environ["LANGSMITH_TRACING"] = "true"
+
+# if not os.environ.get("GROQ_API_KEY"):
+#     os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
+
+# --------------------------------------------------------------------------
+# !!!!!!!!!! Human in the loop for future use !!!!!!!!!!!
+# --------------------------------------------------------------------------
+# @st.dialog("! User Validation")
+# def human_in_loop(query):
+#     st.write(f"Procced with query?")
+#     st.write(query)
+#     col1, col2 = st.columns([1,1])
+#     with col1:
+#         if st.button("Approve", type='primary'):
+#             st.session_state.validate_query = True
+#             st.rerun()
+#     with col2:
+#         if st.button("Reject"):
+#             st.session_state.validate_query = False
+#             st.rerun()
 
 
 # def human_in_loop_for_future(human_in_the_loop=False):

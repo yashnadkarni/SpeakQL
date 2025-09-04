@@ -1,13 +1,13 @@
+# --------------------------------------------------------------------------
+# SpeakQL for Enterprise file  (About Section and Future Scope)
+# Info Page
+# --------------------------------------------------------------------------
 
+# Main imports
 import streamlit as st
 import streamlit.components.v1 as components
-import time
 
 
-# if 'enterprise_title' not in st.session_state:
-#     st.session_state.enterprise_title=''
-
-#st.set_page_config(page_title="SpeakQL for Enterprise", layout="wide", page_icon="🗣️")
 
 # ---------- HEADER ----------
 st.markdown(f"<h1 style='text-align: center;'>🗣️ SpeakQL for Enterprise</h1>", unsafe_allow_html=True)
@@ -15,7 +15,7 @@ st.markdown("<h4 style='text-align: center;'>Conversational SQL Interface for En
 st.markdown("---")
 
 
-#title_changes=['Teams', 'Organizations', 'Enterprise', 'You']
+#title_changes=['Teams', 'Organizations', 'Enterprise', 'You'] --> Future display, scrolling text
 
 
 # ---------- VALUE PROP ----------

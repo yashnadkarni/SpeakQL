@@ -1,22 +1,24 @@
+# --------------------------------------------------------------------------
+# SpeakQL : Main app file
+# To run: streamlit run app.py
+# --------------------------------------------------------------------------
+
+# Main imports
 import streamlit as st
-# from dotenv import load_dotenv
 import os
 import time
-#from eralchemy import render_er
-
 import speech_recognition as sr
 import wave
 import io
 import pyperclip
+
+
+# For dev env ------------------------------------------------------------
+# from dotenv import load_dotenv
+# from eralchemy import render_er
 # Load environment variables
 # load_dotenv()
 
-# Add to requirements
-# graphviz
-# SpeechRecognition
-# pyttsx3
-# pyperclip
-# dotenv
 
 
 # def save_api_keys(langchain_key, model_key, selected_model):
@@ -35,8 +37,9 @@ import pyperclip
 #         elif selected_model == "Anthropic":
 #             os.environ["ANTHROPIC_API_KEY"] = model_key
 #             st.session_state["model_key_set"] = True
+# --------------------------------------------------------------------------
 
-
+# ----------------------- ER Diagram box -----------------------------------
 @st.dialog("ER Diagram", width="large")
 def generate_er(img_path, db_url):
     st.write("This is the ER Diagram")
@@ -44,10 +47,9 @@ def generate_er(img_path, db_url):
     if st.button("Okay"):
         st.rerun()
 
+# ----------------------- API Keys box -----------------------------------
 @st.dialog("API Keys")
 def api_keys_box(curr_model):
-    # os.environ["LANGSMITH_API_KEY"] = st.text_input("Enter LangSmith API Key", type="password", key='langsmith')
-    # os.environ[f"{curr_model.upper()}_API_KEY"] = st.text_input(f"Enter {curr_model} API Key", type="password", key='model_api_key')
     l_api_key = st.text_input("Enter LangSmith API Key", type="password", key='langsmith')
     m_api_key = st.text_input(f"Enter {curr_model} API Key", type="password", key='model_api_key')
     
@@ -58,10 +60,11 @@ def api_keys_box(curr_model):
 if 'welcome' not in st.session_state:
         st.session_state.welcome = True
 
+# ----------------------- Welcome Message box -----------------------------------
 @st.dialog("Welcome to SpeakQL")
 def welcome_box():
     st.write("Directly speak to your database. No SQL queries needed! Ask your questions in chat or use voice input. View ER diagram for reference.")
-    st.write("This demo is powered by **Grok** and the **Chinook** database.")
+    st.write("This demo is powered by **gpt-4o-mini** and the **Chinook** database.")
     st.markdown("### Explore:")
     
     col1, col2 = st.columns(2)
@@ -73,26 +76,22 @@ def welcome_box():
         st.caption("- How many customers are there?")
         st.caption("- What are the names of different artists?")
         
-        
-
     with col2:
         st.subheader("🔸 SpeakQL Pro")
         st.info("🧠 Ideal for complex questions. Uses AI agents.")
         st.caption("- What’s the total revenue per genre?")
         st.caption("- Which artist had the most album sales in 2009?")
     
-        
-
-    #st.markdown("---")
     st.markdown(" 🏢 Want to Learn More? Visit **SpeakQL for Enterprise** ")
-
     st.caption("⚠️ This app may produce incorrect results. Always verify critical data.")
     
 
     st.session_state.welcome = False
         
 
+# ----------------------- Main function -----------------------------------
 def main():
+    # Page configuration
     st.set_page_config(
         page_title="SpeakQL",
         page_icon="🗣️",
@@ -100,13 +99,14 @@ def main():
     )
     if st.session_state.welcome:
         welcome_box()
-    # Initialize session state for API key status
+
+    # Initialize session state for API key
     if "langsmith_key_set" not in st.session_state:
         st.session_state["langsmith_key_set"] = False
     if "model_key_set" not in st.session_state:
         st.session_state["model_key_set"] = False
 
-
+    # 3 App pages -> Home, Pro, Enterprise (About Section)
     pages = {
         "": [
             st.Page("utils/home_page.py", title="SpeakQL"),
@@ -115,6 +115,7 @@ def main():
         ]
     }
 
+    # Database connection box ------------------------------------------------
     if 'db_conn_status' not in st.session_state:
         st.session_state.db_conn_status = "Database Connected"
 
@@ -135,23 +136,26 @@ def main():
             st.session_state.db_conn_status = "Database Connected"
             st.session_state.db_icon = 'database'
             st.rerun()
+    # --------------------------------------------------------------------------
     
     
+    # ER Diagram box ------------------------------------------------------------
     img_name = 'chinhook_arch.png'
     output_path = os.path.join(os.getcwd(), 'data', img_name)
-    # render_er(db_url, output_path)
+    # render_er(db_url, output_path) ---> will render while setup.
     if st.sidebar.button("ER Diagram", use_container_width=True, type='primary'):
         generate_er(output_path, db_url)
 
+    # Model selection box ------------------------------------------------
     #st.session_state.human_in_the_loop = st.sidebar.toggle("Human in the loop")
-    curr_model = st.sidebar.selectbox("Select Model", ["Grok", "OpenAI", "Llama"], key="model") 
+    curr_model = st.sidebar.selectbox("Select Model", ["OpenAI", "Grok", "Llama"], key="model") 
 
     if st.sidebar.button("API Keys", icon=':material/key_vertical:', use_container_width=True):
         api_keys_box(curr_model)
 
     
         
-    # ----------------------- Trying voice  -----------------------------------
+    # ----------------------- Voice input  -----------------------------------
     audio = st.sidebar.audio_input("Try Voice Input")
     if audio:
         #st.warning("Unfortunately, audio translation is not working.")
@@ -168,7 +172,7 @@ def main():
                     text = r.recognize_google(audio_data)
                     text = text.lower()
                 st.info(f"{text}  (Please paste in Chat)")
-                #pyperclip.copy(text) - copy issue in prod
+                #pyperclip.copy(text) --->  copy issue in prod
             except sr.UnknownValueError:
                 st.warning("Could not understand audio.")
             except sr.RequestError as e:
