@@ -42,7 +42,8 @@ def get_api_keys():
     """Retrieve API keys from environment variables."""
     api_keys = {
         "GROQ_API_KEY": st.secrets["GROQ_API_KEY"],
-        "LANGSMITH_API_KEY": st.secrets["LANGSMITH_API_KEY"]
+        "LANGSMITH_API_KEY": st.secrets["LANGSMITH_API_KEY"],
+        "OPENAI_API_KEY": st.secrets["OPENAI_API_KEY"]
     }
     return api_keys
 
@@ -53,19 +54,19 @@ if "validate_query" not in st.session_state:
     st.session_state.validate_query = 0
 
 
-@st.dialog("! User Validation")
-def human_in_loop(query):
-    st.write(f"Procced with query?")
-    st.write(query)
-    col1, col2 = st.columns([1,1])
-    with col1:
-        if st.button("Approve", type='primary'):
-            st.session_state.validate_query = True
-            st.rerun()
-    with col2:
-        if st.button("Reject"):
-            st.session_state.validate_query = False
-            st.rerun()
+# @st.dialog("! User Validation")
+# def human_in_loop(query):
+#     st.write(f"Procced with query?")
+#     st.write(query)
+#     col1, col2 = st.columns([1,1])
+#     with col1:
+#         if st.button("Approve", type='primary'):
+#             st.session_state.validate_query = True
+#             st.rerun()
+#     with col2:
+#         if st.button("Reject"):
+#             st.session_state.validate_query = False
+#             st.rerun()
 
 api_keys = get_api_keys()
 # if not os.environ.get("LANGSMITH_API_KEY"):
@@ -76,7 +77,9 @@ api_keys = get_api_keys()
 #     os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
 db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
-llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
+# llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
+llm = init_chat_model("gpt-4o-mini", model_provider="openai")
+
 
 def write_query(state: State):
     """Generate SQL query to fetch information."""
