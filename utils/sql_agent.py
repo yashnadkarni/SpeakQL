@@ -33,7 +33,8 @@ def get_api_keys():
     """Retrieve API keys from environment variables."""
     api_keys = {
         "GROQ_API_KEY": st.secrets["GROQ_API_KEY"],
-        "LANGSMITH_API_KEY": st.secrets["LANGSMITH_API_KEY"]
+        "LANGSMITH_API_KEY": st.secrets["LANGSMITH_API_KEY"],
+        "OPENAI_API_KEY": st.secrets["OPENAI_API_KEY"]
     }
     return api_keys
 
@@ -59,7 +60,9 @@ class State(TypedDict):
 #   os.environ["GROQ_API_KEY"] = api_keys["GROQ_API_KEY"]
 
 
-llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
+#llm = init_chat_model("llama-3.1-8b-instant", model_provider="groq")
+llm = init_chat_model("gpt-4o-mini", model_provider="openai")
+
 
 
 # Function to capture printed output
